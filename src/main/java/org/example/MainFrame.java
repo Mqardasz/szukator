@@ -23,7 +23,7 @@ public class MainFrame {
     private List<Future<?>> producentFuture = new ArrayList<>();
     private List<Future<?>> konsumentFuture = new ArrayList<>();
 
-    private BlockingQueue<Optional<Path>> kolejka; // accessible for poison pills
+    private BlockingQueue<Optional<Path>> kolejka; // Accessible for poison pills
 
     public static void main(String[] args) {
         try {
@@ -84,23 +84,21 @@ public class MainFrame {
 
         // Cancel producer tasks
         for (Future<?> f : producentFuture) {
-            System.out.println("yes");
             f.cancel(true);
         }
 
         // Send poison pills to consumers
         if (kolejka != null) {
-            System.out.println("zamykam");
             for (int i = 0; i < liczbaKonsumentow; i++) {
                 try {
-                    kolejka.put(Optional.empty()); // poison pill
+                    kolejka.put(Optional.empty()); // Poison pill
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
             }
         }
 
-        // No need to cancel consumer threads — they will stop gracefully
+        // No need to cancel consumer threads explicitly — they will stop gracefully
     }
 
     private void getMultiThreadedStatistics() {
@@ -112,7 +110,7 @@ public class MainFrame {
         producentFuture.clear();
         konsumentFuture.clear();
 
-        BlockingQueue<Optional<Path>> kolejka = new LinkedBlockingQueue<>(liczbaKonsumentow);
+        kolejka = new LinkedBlockingQueue<>(liczbaKonsumentow);
 
         for (int i = 0; i < liczbaProducentow; i++) {
             Runnable producer = new Producer(fajrant, kolejka, DIR_PATH, przerwa);
